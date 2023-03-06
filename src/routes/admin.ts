@@ -1,17 +1,16 @@
-import path from 'path';
 import express from 'express';
-
-import { rootDir } from '../util/path';
 
 const router = express.Router();
 
+const products: Product[] = [];
+
 router.get('/product', (req, res, next) => {
-  res.sendFile(path.join(rootDir, 'views', 'product.html'));
+  res.render('product', { docTitle: 'Add product', path: '/admin/product' });
 });
 
 router.post('/product', (req, res, next) => {
-  console.log('base route');
-  res.send('<h2> post prod </h2>');
+  products.push({ title: req.body.title });
+  res.redirect('/');
 });
 
-export default router;
+export { router, products };

@@ -14,9 +14,9 @@ block content
             header.card__header
               h1.card__title #{product.title}
             div.card__image
-              img(src="https://media.newyorker.com/photos/59ee325f1685003c9c28c4ad/16:9/w_5616,h_3159,c_limit/Heller-Kirkus-Reviews.jpg", alt="Book")
+              img(src=product.imageUrl, alt=product.title)
             div.card__content
-              h2.product__price $19.99
-              p.product__description A great book!
+              h2.product__price $#{product.price}
+              p.product__description #{product.description}
             .card__actions
               button.btn Add to Cart

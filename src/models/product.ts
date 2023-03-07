@@ -2,9 +2,15 @@ import { getProductsFromFile, writeProductsToFile } from '../util/file';
 
 class Product implements IProduct {
   title: string;
+  imageUrl: string;
+  description: string;
+  price: number;
 
-  constructor(title: string) {
+  constructor(title: string, imageUrl: string, description: string, price: number) {
     this.title = title;
+    this.imageUrl = imageUrl;
+    this.description = description;
+    this.price = price;
   }
 
   async save() {

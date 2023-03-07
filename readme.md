@@ -1,10 +1,14 @@
 # Basic node and express project
 
-### Following udemy course https://www.udemy.com/course/nodejs-the-complete-guide
+### Following course by Maximilian Schwarzmüller
 
-### Using Typescript as a plus
+## So far, tech used
 
-<br/>
+- Typescript
+- Node
+- Express
+- Pug
+- FS
 
 ## To run the project
 

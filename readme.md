@@ -8,7 +8,6 @@
 - Node
 - Express
 - Pug
-- FS
 
 ## To run the project
 

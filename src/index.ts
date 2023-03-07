@@ -1,7 +1,6 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import path from 'path';
-
 import errorController from './controllers/errorController';
 import adminRoutes from './routes/admin';
 import shopRoutes from './routes/shop';

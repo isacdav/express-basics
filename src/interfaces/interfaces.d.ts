@@ -1,5 +1,5 @@
 interface IProduct {
   title: string;
   save?: () => void;
-  getAll?: () => IProduct[];
+  getAll?: () => Promise<IProduct[]>;
 }

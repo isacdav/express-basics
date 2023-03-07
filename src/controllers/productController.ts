@@ -1,13 +1,12 @@
 import { RequestHandler } from 'express';
-
 import Product from '../models/product';
 
 const getAddProduct: RequestHandler = (req, res) => {
   res.render('product', { docTitle: 'Add product', path: '/admin/product' });
 };
 
-const getProducts: RequestHandler = (req, res) => {
-  const products = Product.getAll();
+const getProducts: RequestHandler = async (req, res) => {
+  const products = await Product.getAll();
 
   res.render('shop', { products, docTitle: 'Shop', path: '/' });
 };

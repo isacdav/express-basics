@@ -1,4 +1,4 @@
-const products: IProduct[] = [];
+import { getProductsFromFile, writeProductsToFile } from '../util/file';
 
 class Product implements IProduct {
   title: string;
@@ -7,12 +7,14 @@ class Product implements IProduct {
     this.title = title;
   }
 
-  save() {
-    products.push(this);
+  async save() {
+    const existingProducts = await getProductsFromFile();
+    existingProducts.push(this);
+    writeProductsToFile(existingProducts);
   }
 
   static getAll() {
-    return products;
+    return getProductsFromFile();
   }
 }
 

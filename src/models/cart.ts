@@ -16,7 +16,7 @@ class Cart implements ICart {
 
     const existingProductIndex = cart.products?.findIndex((product) => product.id === id);
 
-    const existingProduct = cart.products[existingProductIndex] 
+    const existingProduct = cart.products[existingProductIndex];
 
     let updatedProduct: ICartProduct;
     if (existingProduct) {
@@ -32,6 +32,28 @@ class Cart implements ICart {
     cart.products = [...cart.products, updatedProduct];
 
     writeObjectsToFile('cart', cart);
+  }
+
+  static async deleteProduct(id: number, productPrice: number) {
+    const cartReq = (await getObjectsFromFile('cart', true)) as ICart;
+    const cart = isEmptyObject(cartReq) ? new Cart() : cartReq;
+
+    const existingProduct = cart.products?.find((product) => product.id === id);
+
+    if (!existingProduct) {
+      return;
+    }
+
+    const updatedCart = { ...cart };
+    updatedCart.products = updatedCart.products.filter((product) => product.id !== id);
+    updatedCart.totalPrice = updatedCart.totalPrice - productPrice * existingProduct.qty;
+
+    writeObjectsToFile('cart', updatedCart);
+  }
+
+  static async getCart() {
+    const cartReq = (await getObjectsFromFile('cart', true)) as ICart;
+    return isEmptyObject(cartReq) ? new Cart() : cartReq;
   }
 }
 

@@ -40,3 +40,11 @@ export const postEditProduct: RequestHandler = async (req, res) => {
 
   res.redirect('/admin/products');
 };
+
+export const postDeleteProduct: RequestHandler = async (req, res) => {
+  const { productId } = req.body;
+
+  await Product.deleteById(Number(productId));
+
+  res.redirect('/admin/products');
+};

@@ -1,1 +1,13 @@
 extends ../layouts/head.pug
+
+block content
+  if cartProducts.length === 0
+    h1 There are no products!
+  else
+      ul
+        each product in cartProducts
+          li
+            p= product.title + ' - ' + product.price
+            form(action="/cart-delete-item", method="POST")
+              input(type="hidden", name="productId", value=product.id)
+              button.btn(type="submit") Delete

@@ -20,8 +20,15 @@ export const getProduct: RequestHandler = async (req, res) => {
   res.render('shop/product-detail', { product, docTitle: product?.title, path: '/products' });
 };
 
-export const getCart: RequestHandler = (req, res) => {
-  res.render('shop/cart', { docTitle: 'Your cart', path: '/cart' });
+export const getCart: RequestHandler = async (req, res) => {
+  const cart = await Cart.getCart();
+  const productsInCart = await Product.getAllByIds(cart.products.map((p) => p.id));
+  const cartProducts = productsInCart.map((p) => {
+    const product = cart.products.find((cp) => cp.id === p.id);
+    return { ...p, qty: product?.qty || 0 };
+  });
+
+  res.render('shop/cart', { docTitle: 'Your cart', path: '/cart', cart, cartProducts });
 };
 
 export const postCart: RequestHandler = async (req, res) => {
@@ -39,4 +46,13 @@ export const getCheckout: RequestHandler = (req, res) => {
 
 export const getOrders: RequestHandler = (req, res) => {
   res.render('shop/orders', { docTitle: 'Your orders', path: '/orders' });
+};
+
+export const postDeleteCartItem: RequestHandler = async (req, res) => {
+  const productId = Number(req.body.productId);
+
+  const product = await Product.getById(productId);
+  await Cart.deleteProduct(productId, product?.price || 0);
+
+  res.redirect('/cart');
 };

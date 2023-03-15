@@ -1,3 +1,4 @@
+import db from '../util/database';
 import { getObjectsFromFile, writeObjectsToFile } from '../util/file';
 import Cart from './cart';
 
@@ -17,24 +18,19 @@ class Product implements IProduct {
   }
 
   async save() {
-    const existingProducts: IProduct[] = await getObjectsFromFile('products');
+    this.id = this.id || new Date().getTime();
 
-    let prodsToSave: IProduct[] = [];
-    if (this.id) {
-      const existingProductIndex = existingProducts.findIndex((product) => product.id === this.id);
-      const updatedProducts = [...existingProducts];
-      updatedProducts[existingProductIndex] = this;
-      prodsToSave = updatedProducts;
-    } else {
-      this.id = new Date().getTime();
-      prodsToSave = [...existingProducts, this];
-    }
-
-    writeObjectsToFile('products', prodsToSave);
+    return db.execute('INSERT INTO products (id, title, price, imageUrl, description) VALUES (?, ?, ?, ?, ?)', [
+      this.id,
+      this.title,
+      this.price,
+      this.imageUrl,
+      this.description,
+    ]);
   }
 
   static getAll() {
-    return getObjectsFromFile('products');
+    return db.execute('SELECT * FROM products');
   }
 
   static async getAllByIds(ids: number[]) {
@@ -43,8 +39,7 @@ class Product implements IProduct {
   }
 
   static async getById(id: number) {
-    const productList: IProduct[] = await getObjectsFromFile('products');
-    return productList.find((product) => product.id === id);
+    return db.execute('SELECT * FROM products WHERE id = ?', [id]);
   }
 
   static async deleteById(id: number) {

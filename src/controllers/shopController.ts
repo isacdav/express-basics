@@ -3,21 +3,43 @@ import Cart from '../models/cart';
 import Product from '../models/product';
 
 export const getIndex: RequestHandler = async (req, res) => {
-  const products = await Product.getAll();
+  let products: IProduct[] = [];
 
-  res.render('shop/index', { products, docTitle: 'Shop', path: '/' });
+  try {
+    const [rows] = await Product.getAll();
+    products = rows;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    res.render('shop/index', { products, docTitle: 'Shop', path: '/' });
+  }
 };
 
 export const getProducts: RequestHandler = async (req, res) => {
-  const products = await Product.getAll();
+  let products: IProduct[] = [];
 
-  res.render('shop/product-list', { products, docTitle: 'All products', path: '/products' });
+  try {
+    const [rows] = await Product.getAll();
+    products = rows;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    res.render('shop/product-list', { products, docTitle: 'All products', path: '/products' });
+  }
 };
 
 export const getProduct: RequestHandler = async (req, res) => {
   const productId = Number(req.params.productId);
-  const product = await Product.getById(productId);
-  res.render('shop/product-detail', { product, docTitle: product?.title, path: '/products' });
+  let product: IProduct | undefined;
+
+  try {
+    const [rows] = await Product.getById(productId);
+    product = rows[0];
+  } catch (error) {
+    console.log(error);
+  } finally {
+    res.render('shop/product-detail', { product, docTitle: product?.title, path: '/products' });
+  }
 };
 
 export const getCart: RequestHandler = async (req, res) => {

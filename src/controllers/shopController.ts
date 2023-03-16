@@ -1,13 +1,12 @@
 import { RequestHandler } from 'express';
-import Cart from '../models/cart';
+import { RequestAuth } from '../interfaces/interfaces';
 import Product from '../models/product';
 
 export const getIndex: RequestHandler = async (req, res) => {
-  let products: IProduct[] = [];
+  let products;
 
   try {
-    const [rows] = await Product.getAll();
-    products = rows;
+    products = await Product.findAll();
   } catch (err) {
     console.log(err);
   } finally {
@@ -16,11 +15,10 @@ export const getIndex: RequestHandler = async (req, res) => {
 };
 
 export const getProducts: RequestHandler = async (req, res) => {
-  let products: IProduct[] = [];
+  let products;
 
   try {
-    const [rows] = await Product.getAll();
-    products = rows;
+    products = await Product.findAll();
   } catch (err) {
     console.log(err);
   } finally {
@@ -30,11 +28,10 @@ export const getProducts: RequestHandler = async (req, res) => {
 
 export const getProduct: RequestHandler = async (req, res) => {
   const productId = Number(req.params.productId);
-  let product: IProduct | undefined;
+  let product;
 
   try {
-    const [rows] = await Product.getById(productId);
-    product = rows[0];
+    product = await Product.findByPk(productId);
   } catch (error) {
     console.log(error);
   } finally {
@@ -42,24 +39,43 @@ export const getProduct: RequestHandler = async (req, res) => {
   }
 };
 
-export const getCart: RequestHandler = async (req, res) => {
-  const cart = await Cart.getCart();
-  const productsInCart = await Product.getAllByIds(cart.products.map((p) => p.id));
-  const cartProducts = productsInCart.map((p) => {
-    const product = cart.products.find((cp) => cp.id === p.id);
-    return { ...p, qty: product?.qty || 0 };
-  });
+export const getCart: RequestHandler = async (req: RequestAuth, res) => {
+  let cart;
+  let cartProducts;
 
-  res.render('shop/cart', { docTitle: 'Your cart', path: '/cart', cart, cartProducts });
+  try {
+    cart = await req.user?.getCart();
+    cartProducts = await cart?.getProducts();
+  } catch (err) {
+    console.log(err);
+  } finally {
+    res.render('shop/cart', { docTitle: 'Your cart', path: '/cart', cart, cartProducts });
+  }
 };
 
-export const postCart: RequestHandler = async (req, res) => {
+export const postCart: RequestHandler = async (req: RequestAuth, res) => {
   const productId = Number(req.body.productId);
-  const product = await Product.getById(productId);
+  let cart;
+  let productsInCart;
 
-  await Cart.addProduct(productId, product?.price || 0);
+  try {
+    cart = await req.user?.getCart();
+    productsInCart = await cart?.getProducts({ where: { id: productId } });
 
-  res.redirect('/cart');
+    if (productsInCart && productsInCart.length > 0) {
+      const product = productsInCart[0];
+      const oldQuantity = product.cartItem?.quantity || 0;
+      const newQuantity = oldQuantity + 1;
+      await product.cartItem?.update({ quantity: newQuantity });
+    } else {
+      const product = await Product.findByPk(productId);
+      await cart?.addProduct(product, { through: { quantity: 1 } });
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    res.redirect('/cart');
+  }
 };
 
 export const getCheckout: RequestHandler = (req, res) => {
@@ -70,11 +86,18 @@ export const getOrders: RequestHandler = (req, res) => {
   res.render('shop/orders', { docTitle: 'Your orders', path: '/orders' });
 };
 
-export const postDeleteCartItem: RequestHandler = async (req, res) => {
+export const postDeleteCartItem: RequestHandler = async (req: RequestAuth, res) => {
   const productId = Number(req.body.productId);
 
-  const product = await Product.getById(productId);
-  await Cart.deleteProduct(productId, product?.price || 0);
+  try {
+    const productInCart = await req.user?.getCart();
+    const products = await productInCart?.getProducts({ where: { id: productId } });
+    const product = products ? products[0] : null;
 
-  res.redirect('/cart');
+    await product?.cartItem?.destroy();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    res.redirect('/cart');
+  }
 };

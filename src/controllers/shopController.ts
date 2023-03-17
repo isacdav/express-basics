@@ -23,7 +23,7 @@ export const getProduct: RequestHandler = async (req, res) => {
   } catch (error) {
     console.error(error);
   } finally {
-    res.render('shop/product-detail', { product, docTitle: 'Productaaaa', path: '/' });
+    res.render('shop/product-detail', { product, docTitle: product?.title, path: '/' });
   }
 };
 

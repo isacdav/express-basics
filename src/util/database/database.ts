@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import User from '../models/user';
+import { User } from '../../models';
 
-const connect = async (callback: (success: boolean) => void) => {
+export const dbConnect = async (callback: (success: boolean) => void) => {
   try {
     await mongoose.connect('mongodb://localhost:27017/shop');
 
@@ -17,5 +17,3 @@ const connect = async (callback: (success: boolean) => void) => {
     callback(false);
   }
 };
-
-export default connect;

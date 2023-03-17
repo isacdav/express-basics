@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
-import { IProduct } from '../interfaces';
-import { PRODUCT_SCHEMA_NAME, USER_SCHEMA_NAME } from '../util/constants';
+import { IProduct } from '../../interfaces';
+import { PRODUCT_SCHEMA_NAME, USER_SCHEMA_NAME } from '../../util';
 
 const productSchema = new Schema<IProduct>({
   title: {
@@ -26,5 +26,5 @@ const productSchema = new Schema<IProduct>({
   },
 });
 
-const Product = model<IProduct>(PRODUCT_SCHEMA_NAME, productSchema);
-export default Product;
+export const Product = model<IProduct>(PRODUCT_SCHEMA_NAME, productSchema);
+

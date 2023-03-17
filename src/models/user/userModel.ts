@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
-import { ICartItem, IProduct, IUser, IUserMethods, UserModel } from '../interfaces';
-import { PRODUCT_SCHEMA_NAME, USER_SCHEMA_NAME } from '../util/constants';
+import { ICartItem, IProduct, IUser, IUserMethods, UserModel } from '../../interfaces';
+import { PRODUCT_SCHEMA_NAME, USER_SCHEMA_NAME } from '../../util';
 
 const userSchema = new Schema<IUser, UserModel, IUserMethods>({
   name: {
@@ -53,5 +53,4 @@ userSchema.methods.clearCart = function () {
   return this.save();
 };
 
-const User = model<IUser, UserModel>(USER_SCHEMA_NAME, userSchema);
-export default User;
+export const User = model<IUser, UserModel>(USER_SCHEMA_NAME, userSchema);

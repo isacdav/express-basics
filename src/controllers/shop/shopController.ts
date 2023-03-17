@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express';
-import { IProduct, RequestAuth } from '../interfaces';
-import Order from '../models/order';
-import Product from '../models/product';
+import { IProduct, RequestAuth } from '../../interfaces';
+import { Order, Product } from '../../models';
 
 export const getIndex: RequestHandler = async (req, res) => {
   let products: IProduct[] = [];

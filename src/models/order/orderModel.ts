@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { ORDER_SCHEMA_NAME, USER_SCHEMA_NAME } from '../util/constants';
+import { ORDER_SCHEMA_NAME, USER_SCHEMA_NAME } from '../../util';
 
 const orderSchema = new Schema({
   products: [
@@ -15,5 +15,4 @@ const orderSchema = new Schema({
   },
 });
 
-const Order = model(ORDER_SCHEMA_NAME, orderSchema);
-export default Order;
+export const Order = model(ORDER_SCHEMA_NAME, orderSchema);

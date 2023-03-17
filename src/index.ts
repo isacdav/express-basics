@@ -1,13 +1,11 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import path from 'path';
-import errorController from './controllers/errorController';
+import { errorController } from './controllers';
 import { RequestAuth } from './interfaces';
-import User from './models/user';
-import adminRoutes from './routes/admin';
-import shopRoutes from './routes/shop';
-import dbConnect from './util/database';
-import { rootDir } from './util/path';
+import { User } from './models';
+import { adminRoutes, authRoutes, shopRoutes } from './routes';
+import { dbConnect, rootDir } from './util';
 
 // Paths
 const VIEWS_PATH = path.join(rootDir, '..', 'src', 'views');
@@ -32,6 +30,7 @@ app.use(async (req: RequestAuth, res, next) => {
 
 // Routes
 app.use('/admin', adminRoutes);
+app.use(authRoutes);
 app.use(shopRoutes);
 
 // 404 - Not found

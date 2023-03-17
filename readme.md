@@ -7,15 +7,16 @@
 - Node
 - Express
 - Pug
-- As a plus, I coded the project with `Typescript`
+- As a plus, project coded with `Typescript`
 
 ### For the database was used
 
-- File System | [Branch](https://github.com/isacdav/express-basics/tree/fs-json)
-- MySQL & Sequelize | [Branch](https://github.com/isacdav/express-basics/tree/mysql-sequelize)
-- MongoDB & Mongoose (soon) | [Branch](https://github.com/isacdav/express-basics/tree/main)
+- File System | [Branch](https://github.com/isacdav/express-basics/tree/filesystem)
+- MySQL & Sequelize | [Branch](https://github.com/isacdav/express-basics/tree/sequelize)
+- MongoDB | [Branch](https://github.com/isacdav/express-basics/tree/mongo)
+- Mongoose | [Branch](https://github.com/isacdav/express-basics/tree/mongoose)
 
-## To run the project
+## Run the project
 
 1. Clone the project
 2. Run `npm install`

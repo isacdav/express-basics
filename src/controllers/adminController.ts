@@ -2,11 +2,11 @@ import { RequestHandler } from 'express';
 import { ProductAttributes, RequestAuth } from '../interfaces/interfaces';
 import Product from '../models/product';
 
-export const getProducts: RequestHandler = async (req: RequestAuth, res) => {
+export const getProducts: RequestHandler = async (req, res) => {
   let products;
 
   try {
-    products = await req.user?.getProducts();
+    products = await Product.getAll();
   } catch (err) {
     console.log(err);
   } finally {
@@ -22,7 +22,8 @@ export const postAddProduct: RequestHandler = async (req: RequestAuth, res) => {
   const { title, imageUrl, description, price } = req.body as ProductAttributes;
 
   try {
-    await req.user?.createProduct({ title, imageUrl, description, price });
+    const product = new Product(title, imageUrl, description, price, req.user?._id);
+    await product.save();
   } catch (error) {
     console.log(error);
   } finally {
@@ -30,13 +31,12 @@ export const postAddProduct: RequestHandler = async (req: RequestAuth, res) => {
   }
 };
 
-export const getEditProduct: RequestHandler = async (req: RequestAuth, res) => {
-  const productId = Number(req.params.productId);
+export const getEditProduct: RequestHandler = async (req, res) => {
+  const productId = req.params.productId;
   let product;
 
   try {
-    const products = await req.user?.getProducts({ where: { id: productId } });
-    product = products ? products[0] : null;
+    product = await Product.getById(productId);
     if (!product) {
       return res.redirect('/admin/products');
     }
@@ -47,19 +47,11 @@ export const getEditProduct: RequestHandler = async (req: RequestAuth, res) => {
   }
 };
 
-export const postEditProduct: RequestHandler = async (req, res) => {
-  const { id, title, imageUrl, description, price } = req.body as ProductAttributes;
-  let product;
+export const postEditProduct: RequestHandler = async (req: RequestAuth, res) => {
+  const { _id, title, imageUrl, description, price } = req.body as ProductAttributes;
 
   try {
-    product = await Product.findByPk(id);
-    if (!product) {
-      return res.redirect('/admin/products');
-    }
-    product.title = title;
-    product.imageUrl = imageUrl;
-    product.description = description;
-    product.price = price;
+    const product = new Product(title, imageUrl, description, price, req.user?._id, _id);
     await product.save();
   } catch (error) {
     console.log(error);
@@ -71,8 +63,11 @@ export const postEditProduct: RequestHandler = async (req, res) => {
 export const postDeleteProduct: RequestHandler = async (req, res) => {
   const { productId } = req.body;
 
-  const product = await Product.findByPk(productId);
-  await product?.destroy();
-
-  res.redirect('/admin/products');
+  try {
+    await Product.deleteById(productId);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    res.redirect('/admin/products');
+  }
 };

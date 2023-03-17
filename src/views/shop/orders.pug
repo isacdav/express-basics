@@ -1,14 +1,17 @@
 extends ../layouts/head.pug
 
+block styles
+  link(rel="stylesheet", href="/css/orders.css")
+
 block content
   main
     if orders.length === 0
       h1 There are no orders!
     else
-      ul
+      ul.orders
         each order in orders
-          li
-            h3= '#' + order.id
-            ul
-              each product in order.products
-                li= product.title + ' x' + product.orderItem.quantity + ' $' + product.price
+          li.orders__item
+            h3= 'Order #' + order._id
+            ul.orders__products
+              each product in order.items
+                li.orders__products-item= product.title + ' (' + product.quantity + ') $' + product.price

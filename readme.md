@@ -13,7 +13,8 @@
 
 - File System | [Branch](https://github.com/isacdav/express-basics/tree/filesystem)
 - MySQL & Sequelize | [Branch](https://github.com/isacdav/express-basics/tree/sequelize)
-- MongoDB & Mongoose (soon) | [Branch](https://github.com/isacdav/express-basics/tree/mongo)
+- MongoDB | [Branch](https://github.com/isacdav/express-basics/tree/mongo)
+- Mongoose | [Branch](https://github.com/isacdav/express-basics/tree/mongoose)
 
 ## Run the project
 

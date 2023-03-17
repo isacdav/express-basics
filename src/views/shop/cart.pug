@@ -9,12 +9,12 @@ block content
       h1 There are no products!
     else
         ul.cart__item-list
-          each product in cartProducts
+          each p in cartProducts
             li.cart__item
-              h3= product.title + ' - ' + product.price
-              h4= product.quantity
+              h3= p.productId.title + ' - $' + p.productId.price
+              h4= p.quantity
               form(action="/cart-delete-item", method="POST")
-                input(type="hidden", name="productId", value=product._id)
+                input(type="hidden", name="productId", value=p.productId._id)
                 button.btn.danger(type="submit") Delete
         br
         .centered

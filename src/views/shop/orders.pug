@@ -13,5 +13,5 @@ block content
           li.orders__item
             h3= 'Order #' + order._id
             ul.orders__products
-              each product in order.items
-                li.orders__products-item= product.title + ' (' + product.quantity + ') $' + product.price
+              each p in order.products
+                li.orders__products-item= p.product.title + ' (' + p.quantity + ') $' + p.product.price

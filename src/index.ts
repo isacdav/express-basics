@@ -2,11 +2,11 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import path from 'path';
 import errorController from './controllers/errorController';
-import { RequestAuth } from './interfaces/interfaces';
+import { RequestAuth } from './interfaces';
 import User from './models/user';
 import adminRoutes from './routes/admin';
 import shopRoutes from './routes/shop';
-import mongoConnect from './util/database';
+import dbConnect from './util/database';
 import { rootDir } from './util/path';
 
 // Paths
@@ -25,8 +25,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(PUBLIC_PATH));
 
 app.use(async (req: RequestAuth, res, next) => {
-  const user = await User.getById('6413dc1b8a25a035c1717a8d');
-  req.user = new User(user?.name, user?.email, user?.cart, user?._id);
+  const user = await User.findOne();
+  req.user = user;
   next();
 });
 
@@ -37,8 +37,8 @@ app.use(shopRoutes);
 // 404 - Not found
 app.use(errorController.getNotFound);
 
-// DB connection
-mongoConnect((success: boolean) => {
+// Connect to database
+dbConnect((success) => {
   if (success) {
     app.listen(3000);
   }

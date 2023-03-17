@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { RequestAuth } from '../interfaces/interfaces';
+import { ProductInstance, RequestAuth } from '../interfaces/interfaces';
 import Product from '../models/product';
 
 export const getIndex: RequestHandler = async (req, res) => {
@@ -69,6 +69,9 @@ export const postCart: RequestHandler = async (req: RequestAuth, res) => {
       await product.cartItem?.update({ quantity: newQuantity });
     } else {
       const product = await Product.findByPk(productId);
+      if (!product) {
+        return res.redirect('/cart');
+      }
       await cart?.addProduct(product, { through: { quantity: 1 } });
     }
   } catch (error) {
@@ -82,8 +85,16 @@ export const getCheckout: RequestHandler = (req, res) => {
   res.render('shop/checkout', { docTitle: 'Checkout', path: '/checkout' });
 };
 
-export const getOrders: RequestHandler = (req, res) => {
-  res.render('shop/orders', { docTitle: 'Your orders', path: '/orders' });
+export const getOrders: RequestHandler = async (req: RequestAuth, res) => {
+  let orders;
+
+  try {
+    orders = await req.user?.getOrders({ include: ['products'] });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    res.render('shop/orders', { docTitle: 'Your orders', path: '/orders', orders });
+  }
 };
 
 export const postDeleteCartItem: RequestHandler = async (req: RequestAuth, res) => {
@@ -99,5 +110,29 @@ export const postDeleteCartItem: RequestHandler = async (req: RequestAuth, res) 
     console.log(error);
   } finally {
     res.redirect('/cart');
+  }
+};
+
+export const postOrder: RequestHandler = async (req: RequestAuth, res) => {
+  let cart;
+  let productsInCart;
+
+  try {
+    cart = await req.user?.getCart();
+    productsInCart = await cart?.getProducts();
+
+    const order = await req.user?.createOrder();
+    await order?.addProducts(
+      productsInCart?.map((product: ProductInstance) => {
+        product.orderItem = { quantity: product.cartItem?.quantity };
+        return product;
+      }),
+    );
+
+    await cart?.setProducts(null);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    res.redirect('/orders');
   }
 };

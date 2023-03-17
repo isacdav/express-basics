@@ -1,17 +1,16 @@
 import { INTEGER } from 'sequelize';
 import sequelize from '../util/database';
 
-const Cart = sequelize.define('cart', {
+const OrderItem = sequelize.define('orderItem', {
   id: {
     type: INTEGER,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,
   },
-  userId: {
+  quantity: {
     type: INTEGER,
-    unique: true,
   },
 });
 
-export default Cart;
+export default OrderItem;

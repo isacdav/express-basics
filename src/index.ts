@@ -3,9 +3,7 @@ import express from 'express';
 import path from 'path';
 import errorController from './controllers/errorController';
 import { RequestAuth } from './interfaces/interfaces';
-import Cart from './models/cart';
-import CartItem from './models/cartItem';
-import Product from './models/product';
+import { createRelations } from './models/relations';
 import User from './models/user';
 import adminRoutes from './routes/admin';
 import shopRoutes from './routes/shop';
@@ -46,14 +44,7 @@ app.use(shopRoutes);
 app.use(errorController.getNotFound);
 
 // DB Relations
-User.hasMany(Product);
-Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
-
-User.hasOne(Cart);
-Cart.belongsTo(User);
-
-Cart.belongsToMany(Product, { through: CartItem });
-Product.belongsToMany(Cart, { through: CartItem });
+createRelations();
 
 // Sync database
 // Temporarily create user
@@ -69,7 +60,12 @@ sequelize
     return user;
   })
   .then((user) => {
-    return user.createCart();
+    user.getCart().then((cart: any) => {
+      if (!cart) {
+        return user.createCart();
+      }
+      return cart;
+    });
   })
   .then((cart) => {
     // Start server if user is created

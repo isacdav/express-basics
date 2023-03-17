@@ -1,1 +1,14 @@
 extends ../layouts/head.pug
+
+block content
+  main
+    if orders.length === 0
+      h1 There are no orders!
+    else
+      ul
+        each order in orders
+          li
+            h3= '#' + order.id
+            ul
+              each product in order.products
+                li= product.title + ' x' + product.orderItem.quantity + ' $' + product.price

@@ -24,7 +24,12 @@ interface ProductAttributes {
   price: number;
 }
 interface ProductCreationAttributes extends Optional<ProductAttributes, 'id'> {}
-interface ProductInstance extends Model<ProductAttributes, ProductCreationAttributes>, ProductAttributes {}
+interface ProductInstance extends Model<ProductAttributes, ProductCreationAttributes>, ProductAttributes {
+  cartItem: any;
+  orderItem: any;
+  // TODO: fix this - create types for cartItem and orderItem
+  // cartItem: CartItemInstance[];
+}
 
 // User interfaces
 interface UserAttributes {
@@ -38,6 +43,8 @@ interface UserInstance extends Model<UserAttributes, UserCreationAttributes>, Us
   getProducts: HasManyGetAssociationsMixin<ProductInstance>;
   createCart: HasOneCreateAssociationMixin<CartAttributes>;
   createProduct: HasManyCreateAssociationMixin<ProductAttributes, ProductInstance>;
+  createOrder: HasManyCreateAssociationMixin<OrderInstance, OrderInstance['id']>;
+  getOrders: HasManyGetAssociationsMixin<OrderInstance>;
 }
 
 // Cart interfaces
@@ -47,5 +54,34 @@ interface CartAttributes {
 interface CartCreationAttributes extends Optional<CartAttributes, 'id'> {}
 interface CartInstance extends Model<CartAttributes, CartCreationAttributes>, CartAttributes {
   getProducts: HasManyGetAssociationsMixin<ProductInstance>;
-  addProduct: HasManyAddAssociationMixin<ProductInstance, number>;
+  addProduct: HasManyAddAssociationMixin<CartItemInstance, number>;
+}
+
+// Order interfaces
+interface OrderAttributes {
+  id: number;
+}
+interface OrderCreationAttributes extends Optional<OrderAttributes, 'id'> {}
+interface OrderInstance extends Model<OrderAttributes, OrderCreationAttributes>, OrderAttributes {
+  addProducts: HasManySetAssociationsMixin<ProductInstance, number>;
+}
+
+// CartItem interfaces
+interface CartItemAttributes {
+  id: number;
+  quantity: number;
+}
+interface CartItemCreationAttributes extends Optional<CartItemAttributes, 'id'> {}
+interface CartItemInstance extends Model<CartItemAttributes, CartItemCreationAttributes>, CartItemAttributes {
+  product: ProductInstance;
+}
+
+// OrderItem interfaces
+interface OrderItemAttributes {
+  id: number;
+  quantity: number;
+}
+interface OrderItemCreationAttributes extends Optional<OrderItemAttributes, 'id'> {}
+interface OrderItemInstance extends Model<OrderItemAttributes, OrderItemCreationAttributes>, OrderItemAttributes {
+  product: ProductInstance;
 }

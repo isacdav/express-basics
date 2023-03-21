@@ -22,3 +22,16 @@ export const postLogout: RequestHandler = (req, res) => {
     res.redirect('/');
   });
 };
+
+export const getSignup: RequestHandler = (req, res) => {
+  res.render('auth/signup', { docTitle: 'Signup', path: '/signup', isLogged: !!req.user });
+};
+
+export const postSignup: RequestHandler = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = new User(email, password);
+  await user.save();
+
+  res.redirect('/login');
+};

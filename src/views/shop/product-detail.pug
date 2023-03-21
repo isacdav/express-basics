@@ -8,5 +8,6 @@ block content
       img(src=product.imageUrl, alt=product.title)
     h2 $#{product.price}
     p #{product.description}
+    if isLogged
       include ../layouts/add-to-cart.pug
 

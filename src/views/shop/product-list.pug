@@ -20,5 +20,6 @@ block content
               p.product__description #{product.description}
             .card__actions
               a.btn(href="/products/" + product._id) Details
-              include ../layouts/add-to-cart.pug
+              if isLogged
+                include ../layouts/add-to-cart.pug
 

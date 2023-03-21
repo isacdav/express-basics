@@ -1,9 +1,19 @@
-import { Request } from 'express';
+import 'express-session';
 import { Document, Model, Types } from 'mongoose';
 
 // Req / Res interfaces
-interface RequestAuth extends Request {
-  user?: IUser & IUserMethods;
+declare global {
+  namespace Express {
+    interface Request {
+      user?: IUser & IUserMethods;
+    }
+  }
+}
+
+declare module 'express-session' {
+  interface SessionData {
+    user?: IUser;
+  }
 }
 
 // Product interfaces

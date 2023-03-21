@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { IProduct, RequestAuth } from '../../interfaces';
+import { ICartItem, IProduct } from '../../interfaces';
 import { Order, Product } from '../../models';
 
 export const getIndex: RequestHandler = async (req, res) => {
@@ -10,7 +10,7 @@ export const getIndex: RequestHandler = async (req, res) => {
   } catch (err) {
     console.log(err);
   } finally {
-    res.render('shop/product-list', { products, docTitle: 'Shop', path: '/' });
+    res.render('shop/product-list', { products, docTitle: 'Shop', path: '/', isLogged: !!req.user });
   }
 };
 
@@ -27,24 +27,24 @@ export const getProduct: RequestHandler = async (req, res) => {
   } catch (error) {
     console.error(error);
   } finally {
-    res.render('shop/product-detail', { product, docTitle: product?.title, path: '/' });
+    res.render('shop/product-detail', { product, docTitle: product?.title, path: '/', isLogged: !!req.user });
   }
 };
 
-export const getCart: RequestHandler = async (req: RequestAuth, res) => {
-  let cartProducts;
+export const getCart: RequestHandler = async (req, res) => {
+  let cartProducts: ICartItem[] | undefined = [];
 
   try {
-    const userInfo = await req.user?.populate('cart.items.productId');
-    cartProducts = userInfo?.cart?.items;
+    const userInfo = await req?.user?.populate('cart.items.productId');
+    cartProducts = userInfo?.cart?.items || [];
   } catch (err) {
     console.log(err);
   } finally {
-    res.render('shop/cart', { docTitle: 'Your cart', path: '/cart', cartProducts });
+    res.render('shop/cart', { docTitle: 'Your cart', path: '/cart', cartProducts, isLogged: !!req.user });
   }
 };
 
-export const postCart: RequestHandler = async (req: RequestAuth, res) => {
+export const postCart: RequestHandler = async (req, res) => {
   const productId = req.body.productId;
 
   try {
@@ -60,11 +60,11 @@ export const postCart: RequestHandler = async (req: RequestAuth, res) => {
   }
 };
 
-export const postDeleteCartItem: RequestHandler = async (req: RequestAuth, res) => {
+export const postDeleteCartItem: RequestHandler = async (req, res) => {
   const productId = req.body.productId;
 
   try {
-    await req.user?.deleteFromCart(productId);
+    await req?.user?.deleteFromCart(productId);
   } catch (error) {
     console.log(error);
   } finally {
@@ -73,37 +73,37 @@ export const postDeleteCartItem: RequestHandler = async (req: RequestAuth, res) 
 };
 
 export const getCheckout: RequestHandler = (req, res) => {
-  res.render('shop/checkout', { docTitle: 'Checkout', path: '/checkout' });
+  res.render('shop/checkout', { docTitle: 'Checkout', path: '/checkout', isLogged: !!req.user });
 };
 
-export const getOrders: RequestHandler = async (req: RequestAuth, res) => {
+export const getOrders: RequestHandler = async (req, res) => {
   let orders;
 
   try {
-    orders = await Order.find({ 'user.userId': req.user?._id });
+    orders = await Order.find({ 'user.userId': req?.user?._id });
   } catch (error) {
     console.log(error);
   } finally {
-    res.render('shop/orders', { docTitle: 'Your orders', path: '/orders', orders });
+    res.render('shop/orders', { docTitle: 'Your orders', path: '/orders', orders, isLogged: !!req.user });
   }
 };
 
-export const postOrder: RequestHandler = async (req: RequestAuth, res) => {
+export const postOrder: RequestHandler = async (req, res) => {
   try {
-    const userInfo = await req.user?.populate('cart.items.productId');
+    const userInfo = await req?.user?.populate('cart.items.productId');
     const products = userInfo?.cart?.items.map((item) => ({ quantity: item.quantity, product: { ...item.productId } }));
 
     const order = new Order({
       user: {
-        userId: req.user?._id,
-        name: req.user?.name,
-        email: req.user?.email,
+        userId: req?.user?._id,
+        name: req?.user?.name,
+        email: req?.user?.email,
       },
       products,
     });
 
     await order.save();
-    await req.user?.clearCart();
+    await req?.user?.clearCart();
   } catch (error) {
     console.log(error);
   } finally {

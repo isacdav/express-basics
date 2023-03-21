@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { IProduct, RequestAuth } from '../../interfaces';
+import { IProduct } from '../../interfaces';
 import { Product, User } from '../../models';
 
 export const getProducts: RequestHandler = async (req, res) => {
@@ -10,19 +10,29 @@ export const getProducts: RequestHandler = async (req, res) => {
   } catch (err) {
     console.log(err);
   } finally {
-    res.render('admin/products', { products, docTitle: 'Admin products', path: '/admin/products' });
+    res.render('admin/products', {
+      products,
+      docTitle: 'Admin products',
+      path: '/admin/products',
+      isLogged: !!req.user,
+    });
   }
 };
 
 export const getAddProduct: RequestHandler = (req, res) => {
-  res.render('admin/edit-product', { docTitle: 'Add product', path: '/admin/products', editMode: false });
+  res.render('admin/edit-product', {
+    docTitle: 'Add product',
+    path: '/admin/products',
+    editMode: false,
+    isLogged: !!req.user,
+  });
 };
 
-export const postAddProduct: RequestHandler = async (req: RequestAuth, res) => {
+export const postAddProduct: RequestHandler = async (req, res) => {
   const { title, imageUrl, description, price } = req.body;
 
   try {
-    const product = new Product({ title, imageUrl, description, price, userId: req?.user?._id });
+    const product = new Product({ title, imageUrl, description, price, userId: req.user?._id });
     await product.save();
   } catch (error) {
     console.log(error);
@@ -43,7 +53,13 @@ export const getEditProduct: RequestHandler = async (req, res) => {
   } catch (error) {
     console.log(error);
   } finally {
-    res.render('admin/edit-product', { docTitle: 'Edit product', path: '/admin/products', editMode: true, product });
+    res.render('admin/edit-product', {
+      docTitle: 'Edit product',
+      path: '/admin/products',
+      editMode: true,
+      product,
+      isLogged: !!req.user,
+    });
   }
 };
 

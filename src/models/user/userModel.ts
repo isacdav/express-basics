@@ -3,11 +3,11 @@ import { ICartItem, IProduct, IUser, IUserMethods, UserModel } from '../../inter
 import { PRODUCT_SCHEMA_NAME, USER_SCHEMA_NAME } from '../../util';
 
 const userSchema = new Schema<IUser, UserModel, IUserMethods>({
-  name: {
+  email: {
     type: String,
     required: true,
   },
-  email: {
+  password: {
     type: String,
     required: true,
   },

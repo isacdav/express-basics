@@ -10,7 +10,11 @@ export const getIndex: RequestHandler = async (req, res) => {
   } catch (err) {
     console.log(err);
   } finally {
-    res.render('shop/product-list', { products, docTitle: 'Shop', path: '/', isLogged: !!req.user });
+    res.render('shop/product-list', {
+      products,
+      docTitle: 'Shop',
+      path: '/',
+    });
   }
 };
 
@@ -27,7 +31,7 @@ export const getProduct: RequestHandler = async (req, res) => {
   } catch (error) {
     console.error(error);
   } finally {
-    res.render('shop/product-detail', { product, docTitle: product?.title, path: '/', isLogged: !!req.user });
+    res.render('shop/product-detail', { product, docTitle: product?.title, path: '/' });
   }
 };
 
@@ -40,7 +44,7 @@ export const getCart: RequestHandler = async (req, res) => {
   } catch (err) {
     console.log(err);
   } finally {
-    res.render('shop/cart', { docTitle: 'Your cart', path: '/cart', cartProducts, isLogged: !!req.user });
+    res.render('shop/cart', { docTitle: 'Your cart', path: '/cart', cartProducts });
   }
 };
 
@@ -73,7 +77,7 @@ export const postDeleteCartItem: RequestHandler = async (req, res) => {
 };
 
 export const getCheckout: RequestHandler = (req, res) => {
-  res.render('shop/checkout', { docTitle: 'Checkout', path: '/checkout', isLogged: !!req.user });
+  res.render('shop/checkout', { docTitle: 'Checkout', path: '/checkout' });
 };
 
 export const getOrders: RequestHandler = async (req, res) => {
@@ -84,7 +88,7 @@ export const getOrders: RequestHandler = async (req, res) => {
   } catch (error) {
     console.log(error);
   } finally {
-    res.render('shop/orders', { docTitle: 'Your orders', path: '/orders', orders, isLogged: !!req.user });
+    res.render('shop/orders', { docTitle: 'Your orders', path: '/orders', orders });
   }
 };
 
@@ -96,7 +100,6 @@ export const postOrder: RequestHandler = async (req, res) => {
     const order = new Order({
       user: {
         userId: req?.user?._id,
-        name: req?.user?.name,
         email: req?.user?.email,
       },
       products,

@@ -1,4 +1,3 @@
-import 'express-session';
 import { Document, Model, Types } from 'mongoose';
 
 // Req / Res interfaces
@@ -29,7 +28,7 @@ interface IProduct extends Document {
 // User interfaces
 interface IUser extends Document {
   _id: Types.ObjectId;
-  name: string;
+  password: string;
   email: string;
   cart?: ICart;
 }

@@ -14,7 +14,6 @@ export const getProducts: RequestHandler = async (req, res) => {
       products,
       docTitle: 'Admin products',
       path: '/admin/products',
-      isLogged: !!req.user,
     });
   }
 };
@@ -24,7 +23,6 @@ export const getAddProduct: RequestHandler = (req, res) => {
     docTitle: 'Add product',
     path: '/admin/products',
     editMode: false,
-    isLogged: !!req.user,
   });
 };
 
@@ -58,7 +56,6 @@ export const getEditProduct: RequestHandler = async (req, res) => {
       path: '/admin/products',
       editMode: true,
       product,
-      isLogged: !!req.user,
     });
   }
 };

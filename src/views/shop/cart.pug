@@ -14,9 +14,11 @@ block content
               h3= p.productId.title + ' - $' + p.productId.price
               h4= p.quantity
               form(action="/cart-delete-item", method="POST")
+                input(type="hidden", name="_csrf", value=csrfToken)
                 input(type="hidden", name="productId", value=p.productId._id)
                 button.btn.danger(type="submit") Delete
         br
         .centered
           form(action="/create-order", method="POST")
+            input(type="hidden", name="_csrf", value=csrfToken)
             button.btn(type="submit") Order Now!

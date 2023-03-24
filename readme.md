@@ -16,13 +16,6 @@
 - MongoDB | [Branch](https://github.com/isacdav/express-basics/tree/mongo)
 - Mongoose | [Branch](https://github.com/isacdav/express-basics/tree/mongoose)
 
-## Run the project
-
-1. Clone the project
-2. Run `npm install`
-3. Create a .env file with the following variables
-   - PORT
-   - SENDGRID_APY_KEY (optional) - to use the email service
 4. Run `npm run dev`
 
 ## Project structure
@@ -42,3 +35,11 @@ src
   ├─ views
   └─ index.ts
 ```
+
+## Run the project
+
+1. Clone the project
+2. Run `npm install`
+3. Create a .env file with the following variables
+   - PORT
+   - SENDGRID_APY_KEY (optional) - to use the email service

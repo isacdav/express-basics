@@ -1,4 +1,5 @@
 import { urlencoded } from 'body-parser';
+import { default as flash } from 'connect-flash';
 import { default as mongodbSession } from 'connect-mongodb-session';
 import { default as csusrf } from 'csurf';
 import { default as express, static as expStatic } from 'express';
@@ -35,6 +36,7 @@ app.use(expStatic(PUBLIC_PATH));
 app.use(urlencoded({ extended: false }));
 app.use(session({ store, secret: 'secret key', resave: false, saveUninitialized: false }));
 app.use(csrfProtection);
+app.use(flash());
 
 app.use(async (req, res, next) => {
   if (!req.session.user) {

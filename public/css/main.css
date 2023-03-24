@@ -232,6 +232,22 @@ form {
   color: white;
 }
 
+.flash-message {
+  margin: auto;
+  width: 90%;
+  padding: 0.5rem;
+  border: 1px solid #4771fa;
+  border-radius: 3px;
+  background: #b9c9ff;
+  text-align: center;
+}
+
+.flash-message--error {
+  border-color: #ff0000;
+  background: rgb(255, 176, 176);
+  color: #ff0000;
+}
+
 @media (min-width: 768px) {
   .main-header__nav {
     display: flex;

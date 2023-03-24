@@ -7,6 +7,8 @@ block styles
 block content
   main
     form.login-form(action="signup", method="POST")
+      if errorMessage != null
+        div.flash-message.flash-message--error= errorMessage
       input(type="hidden", name="_csrf", value=csrfToken)
       div.form-control
         label(for="email") Email

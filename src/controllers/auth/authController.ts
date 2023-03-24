@@ -3,7 +3,10 @@ import { RequestHandler } from 'express';
 import { User } from '../../models';
 
 export const getLogin: RequestHandler = (req, res) => {
-  res.render('auth/login', { docTitle: 'Login', path: '/login' });
+  const flash = req.flash('error');
+  const message = flash.length > 0 ? flash[0] : null;
+
+  res.render('auth/login', { docTitle: 'Login', path: '/login', errorMessage: message });
 };
 
 export const postLogin: RequestHandler = async (req, res) => {
@@ -11,11 +14,13 @@ export const postLogin: RequestHandler = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
+    req.flash('error', 'Invalid email or password');
     return res.redirect('/login');
   }
 
   const isPasswordCorrect = compareSync(password, user.password);
   if (!isPasswordCorrect) {
+    req.flash('error', 'Invalid email or password');
     return res.redirect('/login');
   }
 
@@ -36,14 +41,23 @@ export const postLogout: RequestHandler = (req, res) => {
 };
 
 export const getSignup: RequestHandler = (req, res) => {
-  res.render('auth/signup', { docTitle: 'Signup', path: '/signup' });
+  const flash = req.flash('error');
+  const message = flash.length > 0 ? flash[0] : null;
+
+  res.render('auth/signup', { docTitle: 'Signup', path: '/signup', errorMessage: message });
 };
 
 export const postSignup: RequestHandler = async (req, res) => {
   const { email, password, confirmPassword } = req.body;
 
+  if (password !== confirmPassword) {
+    req.flash('error', 'Passwords do not match');
+    return res.redirect('/signup');
+  }
+
   const existingUser = await User.findOne({ email });
   if (existingUser) {
+    req.flash('error', 'Email already exists');
     return res.redirect('/signup');
   }
 

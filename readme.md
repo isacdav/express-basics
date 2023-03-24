@@ -20,4 +20,25 @@
 
 1. Clone the project
 2. Run `npm install`
-3. Run `npm run dev`
+3. Create a .env file with the following variables
+   - PORT
+   - SENDGRID_APY_KEY (optional) - to use the email service
+4. Run `npm run dev`
+
+## Project structure
+
+```
+public
+  ├─ css
+  └─ js
+src
+  ├─ controllers
+  ├─ interfaces
+  ├─ middlewares
+  ├─ models
+  ├─ routes
+  ├─ services
+  ├─ util
+  ├─ views
+  └─ index.ts
+```

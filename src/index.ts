@@ -2,6 +2,7 @@ import { urlencoded } from 'body-parser';
 import { default as flash } from 'connect-flash';
 import { default as mongodbSession } from 'connect-mongodb-session';
 import { default as csusrf } from 'csurf';
+import { default as dotenv } from 'dotenv';
 import { default as express, static as expStatic } from 'express';
 import { default as session } from 'express-session';
 import { join } from 'path';
@@ -19,6 +20,9 @@ const app = express();
 
 // CSRF protect
 const csrfProtection = csusrf();
+
+// .env config
+dotenv.config();
 
 // Session store
 const MongoDBStore = mongodbSession(session);
@@ -65,6 +69,6 @@ app.use(errorController.getNotFound);
 // Connect to database
 dbConnect((success) => {
   if (success) {
-    app.listen(3000);
+    app.listen(process.env.PORT);
   }
 });

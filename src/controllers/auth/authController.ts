@@ -1,6 +1,7 @@
 import { compareSync, hash } from 'bcryptjs';
 import { RequestHandler } from 'express';
 import { User } from '../../models';
+import { SendMailService } from '../../services';
 
 export const getLogin: RequestHandler = (req, res) => {
   const flash = req.flash('error');
@@ -65,6 +66,8 @@ export const postSignup: RequestHandler = async (req, res) => {
 
   const user = new User({ email, password: hashedPassword, cart: { items: [] } });
   await user.save();
+
+  SendMailService.sendSignupEmail(email);
 
   req.session.user = user;
   req.session.save((err) => {

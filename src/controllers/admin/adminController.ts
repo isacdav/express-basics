@@ -6,7 +6,7 @@ export const getProducts: RequestHandler = async (req, res) => {
   let products: IProduct[] = [];
 
   try {
-    products = await Product.find();
+    products = await Product.find({ userId: req.user?._id });
   } catch (err) {
     console.log(err);
   } finally {
@@ -68,16 +68,18 @@ export const postEditProduct: RequestHandler = async (req, res) => {
     if (!product) {
       return res.redirect('/admin/products');
     }
+    if (product.userId.toString() !== req.user?._id?.toString()) {
+      return res.redirect('/admin/products');
+    }
     product.title = title;
     product.imageUrl = imageUrl;
     product.description = description;
     product.price = price;
 
     await product.save();
+    res.redirect('/admin/products');
   } catch (error) {
     console.log(error);
-  } finally {
-    res.redirect('/admin/products');
   }
 };
 
@@ -85,7 +87,7 @@ export const postDeleteProduct: RequestHandler = async (req, res) => {
   const { productId } = req.body;
 
   try {
-    await Product.findByIdAndDelete(productId);
+    await Product.deleteOne({ _id: productId, userId: req.user?._id });
     await User.updateMany({}, { $pull: { 'cart.items': { productId } } });
   } catch (error) {
     console.log(error);

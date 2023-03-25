@@ -19,6 +19,8 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>({
       },
     ],
   },
+  resetToken: String,
+  resetTokenExpiration: Date,
 });
 
 userSchema.methods.addToCart = function (product: IProduct) {

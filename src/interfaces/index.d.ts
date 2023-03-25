@@ -31,6 +31,8 @@ interface IUser extends Document {
   password: string;
   email: string;
   cart?: ICart;
+  resetToken?: string;
+  resetTokenExpiration?: Date;
 }
 
 interface IUserMethods {

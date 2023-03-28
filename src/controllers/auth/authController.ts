@@ -1,6 +1,7 @@
 import { compareSync, hash } from 'bcryptjs';
 import { randomBytes } from 'crypto';
 import { RequestHandler } from 'express';
+import { validationResult } from 'express-validator';
 import { User } from '../../models';
 import { SendMailService } from '../../services';
 
@@ -8,11 +9,21 @@ export const getLogin: RequestHandler = (req, res) => {
   const flash = req.flash('error');
   const message = flash.length > 0 ? flash[0] : null;
 
-  res.render('auth/login', { docTitle: 'Login', path: '/login', errorMessage: message });
+  res.render('auth/login', { docTitle: 'Login', path: '/login', errorMessage: message, validationErrors: [] });
 };
 
 export const postLogin: RequestHandler = async (req, res) => {
   const { email, password } = req.body;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/login', {
+      docTitle: 'Login',
+      path: '/login',
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+    });
+  }
 
   const user = await User.findOne({ email });
   if (!user) {
@@ -46,21 +57,20 @@ export const getSignup: RequestHandler = (req, res) => {
   const flash = req.flash('error');
   const message = flash.length > 0 ? flash[0] : null;
 
-  res.render('auth/signup', { docTitle: 'Signup', path: '/signup', errorMessage: message });
+  res.render('auth/signup', { docTitle: 'Signup', path: '/signup', errorMessage: message, validationErrors: [] });
 };
 
 export const postSignup: RequestHandler = async (req, res) => {
-  const { email, password, confirmPassword } = req.body;
+  const { email, password } = req.body;
 
-  if (password !== confirmPassword) {
-    req.flash('error', 'Passwords do not match');
-    return res.redirect('/signup');
-  }
-
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    req.flash('error', 'Email already exists');
-    return res.redirect('/signup');
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/signup', {
+      docTitle: 'Signup',
+      path: '/signup',
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+    });
   }
 
   const hashedPassword = await hash(password, 12);

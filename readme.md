@@ -41,5 +41,6 @@ src
 1. Clone the project
 2. Run `npm install`
 3. Create a .env file with the following variables
-   - PORT
-   - SENDGRID_APY_KEY (optional) - to use the email service
+   - `PORT`
+   - `SENDGRID_APY_KEY` (optional) to use the email service
+   - `MONGO_CONN_STRING` url to connect to the database

@@ -16,8 +16,6 @@
 - MongoDB | [Branch](https://github.com/isacdav/express-basics/tree/mongo)
 - Mongoose | [Branch](https://github.com/isacdav/express-basics/tree/mongoose)
 
-4. Run `npm run dev`
-
 ## Project structure
 
 ```
@@ -44,3 +42,4 @@ src
    - `PORT`
    - `SENDGRID_APY_KEY` (optional) to use the email service
    - `MONGO_CONN_STRING` url to connect to the database
+4. Run `npm run dev`
